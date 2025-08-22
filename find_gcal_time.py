@@ -39,6 +39,29 @@ def get_calendar_service():
     return service
 
 
+def get_color_escape_code(hex_color):
+    """
+    Converts a hex color to an ANSI escape code for background color.
+    """
+    r = int(hex_color[1:3], 16)
+    g = int(hex_color[3:5], 16)
+    b = int(hex_color[5:7], 16)
+    return f'\033[48;2;{r};{g};{b}m'
+
+
+def list_calendar_colors(service):
+    """
+    Lists the available colors for events.
+    """
+    colors = service.colors().get().execute()
+    print("Available Event Colors:")
+    for id, color in colors['event'].items():
+        hex_code = color['background']
+        color_square = get_color_escape_code(hex_code)
+        reset_code = '\033[0m'
+        print(f"  {color_square}  {reset_code} ID: {id}, Hex: {hex_code}")
+
+
 def main():
     """
     Finds available time slots in the user's Google Calendar.
@@ -46,9 +69,14 @@ def main():
     arg_parser = argparse.ArgumentParser(description='Find available time in your Google Calendar.')
     arg_parser.add_argument('--start', help='Start date in YYYY-MM-DD format. Defaults to the beginning of next week.')
     arg_parser.add_argument('--end', help='End date in YYYY-MM-DD format. Defaults to the end of next week.')
+    arg_parser.add_argument('--list-colors', action='store_true', help='List available calendar colors and exit.')
     args = arg_parser.parse_args()
 
     service = get_calendar_service()
+
+    if args.list_colors:
+        list_calendar_colors(service)
+        return
 
     # Load configuration
     with open('config.yaml', 'r') as f:

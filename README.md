@@ -49,10 +49,20 @@ To find available time in the next week, simply run the script:
 python find_gcal_time.py
 ```
 
-To find available time in a specific date range, use the `--start-date` and `--end-date` arguments:
+### Listing Available Colors
+
+To list the available calendar colors, use the `--list-colors` argument:
 
 ```bash
-python find_gcal_time.py --start-date 2025-09-01 --end-date 2025-09-05
+python find_gcal_time.py --list-colors
+```
+
+This will output a list of color IDs, their hex codes, and their English names. You can use these IDs to configure the `respect_color_id` setting.
+
+To find available time in a specific date range, use the `--start` and `--end` arguments:
+
+```bash
+python find_gcal_time.py --start 2025-09-01 --end 2025-09-05
 ```
 
 The first time you run the script, it will open a browser window to ask for permission to access your Google Calendar. After you grant permission, it will store the authorization token in a `token.json` file for future use.
@@ -87,4 +97,4 @@ The `config.yaml` file allows you to customize the script's behavior.
 | `lunch_break`         | The time to block out for lunch.                                                                                                          | `start: "12:00"`<br>`end: "13:00"`                      |
 | `holidays`            | A list of manual holiday dates in YYYY-MM-DD format.                                                                                      | `["2025-12-25"]`                                        |
 | `holiday_calendar_id` | The ID of a Google Calendar for holidays.                                                                                                 | `'en.usa#holiday@group.v.calendar.google.com'`          |
-| `respect_color_id`    | If set, only events with this color ID will be considered busy. You can find the color IDs in your Google Calendar event settings. | `5`                                                     |
+| `respect_color_id`    | If set, only events with this color ID will be considered busy. You can use the `--list-colors` command to find the available color IDs. | `5`                                                     |
