@@ -67,8 +67,8 @@ def main():
     Finds available time slots in the user's Google Calendar.
     """
     arg_parser = argparse.ArgumentParser(description='Find available time in your Google Calendar.')
-    arg_parser.add_argument('--start', help='Start date in YYYY-MM-DD format. Defaults to the beginning of next week.')
-    arg_parser.add_argument('--end', help='End date in YYYY-MM-DD format. Defaults to the end of next week.')
+    arg_parser.add_argument('--start-date', help='Start date in YYYY-MM-DD format. Defaults to the beginning of next week.')
+    arg_parser.add_argument('--end-date', help='End date in YYYY-MM-DD format. Defaults to the end of next week.')
     arg_parser.add_argument('--list-colors', action='store_true', help='List available calendar colors and exit.')
     args = arg_parser.parse_args()
 

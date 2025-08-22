@@ -62,7 +62,7 @@ This will output a list of color IDs, their hex codes, and their English names. 
 To find available time in a specific date range, use the `--start` and `--end` arguments:
 
 ```bash
-python find_gcal_time.py --start 2025-09-01 --end 2025-09-05
+python find_gcal_time.py --start-date 2025-09-01 --end-date 2025-09-05
 ```
 
 The first time you run the script, it will open a browser window to ask for permission to access your Google Calendar. After you grant permission, it will store the authorization token in a `token.json` file for future use.
