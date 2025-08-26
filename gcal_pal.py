@@ -164,7 +164,7 @@ def main():
     # Find available slots
     available_slots = []
     num_days = (end_date - start_date).days
-    for day_offset in range(num_days):
+    for day_offset in range(num_days + 1):
         day = start_date + datetime.timedelta(days=day_offset)
 
         # Skip holidays
