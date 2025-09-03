@@ -62,6 +62,52 @@ def list_calendar_colors(service):
         print(f"  {color_square}  {reset_code} ID: {id}, Hex: {hex_code}")
 
 
+def is_event_busy(event, consider_attendees, consider_out_of_office, consider_color_id):
+    """
+    Determines if an event should be considered busy based on the configured criteria.
+    
+    Args:
+        event: Google Calendar event object
+        consider_attendees: Boolean - consider busy if other people are invited
+        consider_out_of_office: Boolean - consider busy if event is "Out of Office"
+        consider_color_id: String or None - consider busy if event has this color ID
+    
+    Returns:
+        Boolean - True if event should be considered busy
+    """
+    # Check color criteria (if specified)
+    if consider_color_id is not None:
+        if event.get('colorId') == str(consider_color_id):
+            return True
+    
+    # Check attendees criteria
+    if consider_attendees:
+        attendees = event.get('attendees', [])
+        # Consider busy if there are other attendees (not just the organizer)
+        if len(attendees) > 1:  # More than just the organizer
+            return True
+        # Also check if there are attendees with different email than organizer
+        organizer_email = event.get('organizer', {}).get('email', '')
+        for attendee in attendees:
+            if attendee.get('email') != organizer_email:
+                return True
+    
+    # Check "Out of Office" criteria
+    if consider_out_of_office:
+        # Check if event is marked as "Out of Office" in various ways
+        event_type = event.get('eventType', '')
+        if event_type == 'outOfOffice':
+            return True
+        
+        # Also check the event title for common OOO indicators
+        title = event.get('summary', '').lower()
+        ooo_keywords = ['out of office', 'ooo', 'vacation', 'sick', 'personal', 'away']
+        if any(keyword in title for keyword in ooo_keywords):
+            return True
+    
+    return False
+
+
 def main():
     """
     Finds available time slots in the user's Google Calendar.
@@ -86,10 +132,23 @@ def main():
     min_duration = config['min_duration']
     working_hours_start = config['working_hours']['start']
     working_hours_end = config['working_hours']['end']
-    # ... and so on
+    
+    # Load busy criteria configuration with defaults
+    busy_criteria = config.get('busy_criteria', {})
+    consider_attendees = busy_criteria.get('consider_attendees', True)
+    consider_out_of_office = busy_criteria.get('consider_out_of_office', True)
+    consider_color_id = busy_criteria.get('consider_color_id')
 
     print("Successfully connected to Google Calendar API.")
-    print(f"Minimum meeting duration: {min_duration} minutes\n")
+    print(f"Minimum meeting duration: {min_duration} minutes")
+    print("Busy criteria:")
+    print(f"  - Consider attendees: {consider_attendees}")
+    print(f"  - Consider out of office: {consider_out_of_office}")
+    if consider_color_id is not None:
+        print(f"  - Consider color ID: {consider_color_id}")
+    else:
+        print("  - Color criteria: disabled")
+    print()
 
     # Get the start and end dates
     if args.start_date:
@@ -135,14 +194,13 @@ def main():
                 holiday_dates.append(datetime.datetime.strptime(event['start']['date'], '%Y-%m-%d').date())
 
     timed_events = []
-    respect_color_id = config.get('respect_color_id')
     for event in events:
         if 'dateTime' in event['start']:
-            if respect_color_id and event.get('colorId') != str(respect_color_id):
-                continue
-            start = parser.parse(event['start']['dateTime']).astimezone()
-            end = parser.parse(event['end']['dateTime']).astimezone()
-            timed_events.append((start, end))
+            # Use the new busy detection logic
+            if is_event_busy(event, consider_attendees, consider_out_of_office, consider_color_id):
+                start = parser.parse(event['start']['dateTime']).astimezone()
+                end = parser.parse(event['end']['dateTime']).astimezone()
+                timed_events.append((start, end))
 
     # Combine all busy times
     busy_times = timed_events
