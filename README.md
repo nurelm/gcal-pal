@@ -1,8 +1,14 @@
-# Google Calendar Time Finder
+# 📅 Google Calendar Time Finder
 
-Find open time slots in your Google Calendar, so you can easily answer the question "When are you free to talk next week?".
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+[![Python 3.8+](https://img.shields.io/badge/python-3.8+-blue.svg)](https://www.python.org/downloads/)
+[![PRs Welcome](https://img.shields.io/badge/PRs-welcome-brightgreen.svg)](http://makeapullrequest.com)
 
-This script connects to your Google Calendar and finds available time slots based on your configured working hours, lunch break, and holidays. It features intelligent busy detection that can consider events with other attendees, "Out of Office" events, and events of specific colors, giving you fine-grained control over what should be considered when you're unavailable.
+> Find open time slots in your Google Calendar, so you can easily answer the question "When are you free to talk next week?"
+
+A smart calendar availability finder that connects to your Google Calendar and intelligently identifies available time slots based on your working hours, lunch breaks, holidays, and customizable busy criteria. Perfect for scheduling meetings, finding focus time, or answering availability questions quickly.
+
+**Built with ❤️ by [NuRelm](https://nurelm.com)**
 
 ## Features
 
@@ -108,3 +114,80 @@ The `config.yaml` file allows you to customize the script's behavior.
 | `busy_criteria.consider_attendees` | If true, events with other attendees will be considered busy (default: true).                                              | `true`                                                  |
 | `busy_criteria.consider_out_of_office` | If true, "Out of Office" events will be considered busy (default: true).                                              | `true`                                                  |
 | `busy_criteria.consider_color_id` | If set, only events with this color ID will be considered busy. You can use the `--list-colors` command to find available color IDs. | `5`                                                     |
+
+## 🛠️ Development
+
+### Prerequisites
+
+- Python 3.8 or higher
+- Google Calendar API access
+- A Google account with calendar data
+
+### Local Development
+
+1. Clone the repository:
+```bash
+git clone https://github.com/your-username/gcal-pal.git
+cd gcal-pal
+```
+
+2. Create a virtual environment:
+```bash
+python -m venv venv
+source venv/bin/activate  # On Windows: venv\Scripts\activate
+```
+
+3. Install dependencies:
+```bash
+pip install -r requirements.txt
+```
+
+4. Follow the setup instructions above to configure Google Calendar API access.
+
+### Running Tests
+
+```bash
+python -m pytest tests/
+```
+
+## 🤝 Contributing
+
+We welcome contributions! Please see our [Contributing Guide](CONTRIBUTING.md) for details on how to get started.
+
+### Quick Start for Contributors
+
+1. Fork the repository
+2. Create a feature branch (`git checkout -b feature/amazing-feature`)
+3. Make your changes
+4. Add tests for your changes
+5. Ensure all tests pass
+6. Commit your changes (`git commit -m 'Add amazing feature'`)
+7. Push to your branch (`git push origin feature/amazing-feature`)
+8. Open a Pull Request
+
+## 📝 License
+
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
+
+## 🏢 About NuRelm
+
+This project is maintained by [NuRelm](https://nurelm.com), a software development company that builds innovative solutions for businesses. We're passionate about creating tools that make developers' and users' lives easier.
+
+## 📞 Support
+
+- 🐛 **Bug Reports**: [Open an issue](https://github.com/your-username/gcal-pal/issues)
+- 💡 **Feature Requests**: [Open an issue](https://github.com/your-username/gcal-pal/issues)
+- 📧 **Email**: support@nurelm.com
+- 🌐 **Website**: [nurelm.com](https://nurelm.com)
+
+## 🙏 Acknowledgments
+
+- Google Calendar API team for providing excellent documentation
+- The Python community for amazing libraries
+- All contributors who help make this project better
+
+---
+
+<p align="center">
+  Made with ❤️ by <a href="https://nurelm.com">NuRelm</a>
+</p>

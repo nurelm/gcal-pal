@@ -1,0 +1,36 @@
+name: Python CI
+
+on:
+  push:
+    branches: [ main, develop ]
+  pull_request:
+    branches: [ main, develop ]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        python-version: ["3.8", "3.9", "3.10", "3.11"]
+
+    steps:
+    - uses: actions/checkout@v3
+    - name: Set up Python ${{ matrix.python-version }}
+      uses: actions/setup-python@v4
+      with:
+        python-version: ${{ matrix.python-version }}
+    - name: Install dependencies
+      run: |
+        python -m pip install --upgrade pip
+        pip install -r requirements.txt
+        pip install pytest # Assuming pytest is used for testing
+    - name: Run tests
+      run: |
+        # This assumes you have tests in a /tests directory.
+        # If not, you'll need to create them.
+        # For now, this will pass if the directory doesn't exist.
+        if [ -d "tests" ]; then
+          pytest
+        else
+          echo "No tests directory found. Skipping tests."
+        fi
