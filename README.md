@@ -2,7 +2,7 @@
 
 Find open time slots in your Google Calendar, so you can easily answer the question "When are you free to talk next week?".
 
-This script connects to your Google Calendar and finds available time slots based on your configured working hours, lunch break, and holidays. It can also be configured to only consider events of a specific color as "busy", allowing you to ignore tentative or flexible events.
+This script connects to your Google Calendar and finds available time slots based on your configured working hours, lunch break, and holidays. It features intelligent busy detection that can consider events with other attendees, "Out of Office" events, and events of specific colors, giving you fine-grained control over what should be considered when you're unavailable.
 
 ## Features
 
@@ -10,7 +10,10 @@ This script connects to your Google Calendar and finds available time slots base
 -   Defaults to finding time in the next week.
 -   Considers your working hours and a daily lunch break.
 -   Respects holidays from a specified Google Calendar (e.g., your company's holiday calendar) and a manual list of dates.
--   Can be configured to only consider events of a specific color as "busy".
+-   Intelligent busy detection with configurable criteria:
+    -   Events with other attendees (meetings with colleagues)
+    -   "Out of Office" events (vacation, sick days, etc.)
+    -   Events of a specific color (for custom busy indicators)
 
 ## Setup
 
@@ -46,7 +49,7 @@ pip install -r requirements.txt
 To find available time in the next week, simply run the script:
 
 ```bash
-python find_gcal_time.py
+python gcal_pal.py
 ```
 
 ### Listing Available Colors
@@ -54,15 +57,15 @@ python find_gcal_time.py
 To list the available calendar colors, use the `--list-colors` argument:
 
 ```bash
-python find_gcal_time.py --list-colors
+python gcal_pal.py --list-colors
 ```
 
-This will output a list of color IDs, their hex codes, and their English names. You can use these IDs to configure the `respect_color_id` setting.
+This will output a list of color IDs, their hex codes, and their English names. You can use these IDs to configure the `busy_criteria.consider_color_id` setting.
 
 To find available time in a specific date range, use the `--start` and `--end` arguments:
 
 ```bash
-python find_gcal_time.py --start-date 2025-09-01 --end-date 2025-09-05
+python gcal_pal.py --start-date 2025-09-01 --end-date 2025-09-05
 ```
 
 The first time you run the script, it will open a browser window to ask for permission to access your Google Calendar. After you grant permission, it will store the authorization token in a `token.json` file for future use.
@@ -72,6 +75,10 @@ The first time you run the script, it will open a browser window to ask for perm
 ```
 Successfully connected to Google Calendar API.
 Minimum meeting duration: 60 minutes
+Busy criteria:
+  - Consider attendees: true
+  - Consider out of office: true
+  - Consider color ID: 5
 
 Available slots:
 Monday, 8/25:
@@ -97,4 +104,7 @@ The `config.yaml` file allows you to customize the script's behavior.
 | `lunch_break`         | The time to block out for lunch.                                                                                                          | `start: "12:00"`<br>`end: "13:00"`                      |
 | `holidays`            | A list of manual holiday dates in YYYY-MM-DD format.                                                                                      | `["2025-12-25"]`                                        |
 | `holiday_calendar_id` | The ID of a Google Calendar for holidays.                                                                                                 | `'en.usa#holiday@group.v.calendar.google.com'`          |
-| `respect_color_id`    | If set, only events with this color ID will be considered busy. You can use the `--list-colors` command to find the available color IDs. | `5`                                                     |
+| `busy_criteria`       | Configuration for determining which events should be considered busy.                                                                     | See below                                               |
+| `busy_criteria.consider_attendees` | If true, events with other attendees will be considered busy (default: true).                                              | `true`                                                  |
+| `busy_criteria.consider_out_of_office` | If true, "Out of Office" events will be considered busy (default: true).                                              | `true`                                                  |
+| `busy_criteria.consider_color_id` | If set, only events with this color ID will be considered busy. You can use the `--list-colors` command to find available color IDs. | `5`                                                     |
